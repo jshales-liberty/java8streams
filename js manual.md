@@ -342,7 +342,7 @@ function hello() {
 var hello = function () {
     console.log("hello");
 };
-``
+```
 
 Anonymous functions are nice when we can't think of a good name for the function and when we only want to use the function in one place in code.
 
