@@ -44,6 +44,10 @@ class Person {
 		this();
 		this.name = name;
 	}
+	
+	public String toString() {
+		return this.name + " " + this.id + " " + this.pets.toString();
+	}
 
 	public Long getId() {
 		return id;

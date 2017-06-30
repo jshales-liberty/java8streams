@@ -355,7 +355,7 @@
         (and (:leftUp input) 
             (:leftDown input)) left
         (:leftUp input)
-            (assoc left :y 
+            (assoc left :y
                 (let [y (- (:y left) PADDLE_SPEED)]
                     (if (< y 0) 0 y)))
         (:leftDown input)

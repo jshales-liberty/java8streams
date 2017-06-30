@@ -34,6 +34,10 @@ public class Pet {
 	public Long getId() {
 		return id;
 	}
+	
+	public String toString() {
+		return "(pet: " + this.name + " owners: " + this.owners.size() + ")";
+	}
 
 	public void setId(Long id) {
 		this.id = id;

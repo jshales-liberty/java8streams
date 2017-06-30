@@ -65,7 +65,9 @@ public class ExampleApplication {
 		
 		
 		Person person = new Person("Zapata");
-		person.getPets().add(new Pet("Spot"));
+		Pet spot = new Pet("Spot");
+		person.getPets().add(spot);
 		people.save(person);
+		System.out.println(person);
 	}
 }
