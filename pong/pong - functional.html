@@ -239,32 +239,6 @@
         }
 
 
-(defn updatePaddles [input {left :left right :right} state]
-    [(cond 
-        (and (:leftUp input) (:leftDown input)) left
-        (:leftUp input)
-            (assoc left :y 
-                (let [y (- (:y left) PADDLE_SPEED)]
-                    (if (< y 0) 0 y)))
-        (:leftDown input)
-            (assoc left :y 
-                (let [y (+ (:y left) PADDLE_SPEED)]
-                    (if (> CANVAS_HEIGHT (+ (:y left) (:height left)))
-                        (- CANVAS_HEIGHT (:height left))
-                        y))))
-    (cond 
-        (and (:rightUp input) (:rightDown input)) right
-        (:rightUp input)
-            (assoc right :y 
-                (let [y (- (:y right) PADDLE_SPEED)]
-                    (if (< y 0) 0 y)))
-        (:rightDown input)
-            (assoc right :y 
-                (let [y (+ (:y right) PADDLE_SPEED)]
-                    (if (> CANVAS_HEIGHT (+ (:y right) (:height right)))
-                        (- CANVAS_HEIGHT (:height right))
-                        y))))])
-
 
 
 
@@ -276,6 +250,7 @@
             }
 
             var st = updatePaddles(input, state);
+
 
             // move ball
             var ball = st.get('ball');
@@ -372,3 +347,56 @@
 </body>
 
 </html>
+
+
+
+(defn updatePaddles [input {left :left right :right} state]
+    [(cond 
+        (and (:leftUp input) 
+            (:leftDown input)) left
+        (:leftUp input)
+            (assoc left :y 
+                (let [y (- (:y left) PADDLE_SPEED)]
+                    (if (< y 0) 0 y)))
+        (:leftDown input)
+            (assoc left :y 
+                (let [y (+ (:y left) PADDLE_SPEED)]
+                    (if (> CANVAS_HEIGHT (+ (:y left) (:height left)))
+                        (- CANVAS_HEIGHT (:height left))
+                        y))))
+    (cond 
+        (and (:rightUp input) 
+            (:rightDown input)) right
+        (:rightUp input)
+            (assoc right :y 
+                (let [y (- (:y right) PADDLE_SPEED)]
+                    (if (< y 0) 0 y)))
+        (:rightDown input)
+            (assoc right :y 
+                (let [y (+ (:y right) PADDLE_SPEED)]
+                    (if (> CANVAS_HEIGHT (+ (:y right) (:height right)))
+                        (- CANVAS_HEIGHT (:height right))
+                        y))))])
+
+(defn moveBall [{ball :ball} state] 
+    (let [ball (merge ball 
+                        {:x (+ (:dx ball) (:x ball)) 
+                         :y (+ (:dy ball) (:y ball))})]
+        (cond
+            (< (- (:y ball) (:radius ball) 0))
+                (merge ball {:y (:radius ball) 
+                             :dy (- (:dy ball))})
+            (> (+ (:y ball) (:radius ball)) CANVAS_HEIGHT)
+                (merge ball {:y (- CANVAS_HEIGHT (:radius ball))
+                             :dy (- (:dy ball))})
+            :else ball)))
+
+(defn update [input state]
+    (if (:gameOver state) state
+        (let [[left right] (updatePaddles input state)
+            ball (moveBall state)
+            [ball gameOver leftScore rightScore] (wallCollision ball)
+            ball (paddleCollision)
+            left (merge {:score leftScore})
+            right (merge {:score rightScore})]
+            (merge state {:ball ball :gameOver gameOver :left left :right right}))))
